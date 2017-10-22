@@ -3,7 +3,7 @@
 The 1.0 version is an example game built with [Corona](http://www.coronalabs.com) to go along with the [Getting Started](https://docs.coronalabs.com/guide/programming/index.html) tutorial.
 
 
-#Controls
+## Controls
 Tap on the ship to fire; drag the ship to move left and right.
 
 

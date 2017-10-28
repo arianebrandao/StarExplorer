@@ -1,5 +1,0 @@
-- melhorar Scores (asteroids que passam, subtrae Score)
-- add buffs (novas armas, etc)
-- add dificuldade (novos inimigos?, asteroids mais rápidos?)
-- clicar na tela invés de ser na nave
-- efeitos de explosões, trilha dos lasers ( display.newEmitter())

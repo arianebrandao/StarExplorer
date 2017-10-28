@@ -65,6 +65,9 @@ local livesText
 local scoreText
 local creditoText
 
+-- Set effects
+local explosionImg
+
 -- Set up display groups
 local backGroup
 local mainGroup
@@ -124,9 +127,9 @@ local function fireLaser()
     	onComplete = function() display.remove(newLaser)
     	end 
     } )
+
 end
 
---ship:addEventListener( "tap", fireLaser )
 
 local function dragShip( event )
 	local ship = event.target
@@ -147,7 +150,6 @@ local function dragShip( event )
 	return true  -- Prevents touch propagation to underlying objects
 end
 
---ship:addEventListener( "touch", dragShip )
 
 local function gameLoop()
 	-- Create new asteroid
@@ -166,7 +168,6 @@ local function gameLoop()
 	end
 end
 
---gameLoopTimer = timer.performWithDelay( 500, gameLoop, 0)
 
 local function restoreShip()
 	ship.isBodyActive = false
@@ -186,15 +187,23 @@ local function onCollision( event )
 	if (event.phase == "began") then
 		local obj1 = event.object1
 		local obj2 = event.object2
+		local explosionImg = display.newImageRect( mainGroup, "explosion.png", 112, 112 )
 
 		if ( (obj1.myName == "laser" and obj2.myName == "asteroid") or 
 			(obj1.myName == "asteroid" and obj2.myName == "laser")
 			)
 		then
+			-- imagens explosao
+			explosionImg.x = obj1.x
+			explosionImg.y = obj1.y
+
 			-- Remove both the laser and asteroid
 			display.remove( obj1 )
 			display.remove( obj2 )
 
+			-- efeito explosão
+			timer.performWithDelay( 80, function() display.remove( explosionImg ) end )
+			
 			-- Play explosion sound!
             audio.play( explosionSound )
 
@@ -215,8 +224,15 @@ local function onCollision( event )
         	if (died == false) then
         		died = true
 
+				-- imagens explosao
+				explosionImg.x = obj1.x
+				explosionImg.y = obj1.y
+
         		-- Play explosion sound!
                 audio.play( explosionSound )
+
+                -- efeito explosão
+				timer.performWithDelay( 80, function() display.remove( explosionImg ) end )
 
         		-- Update lives
         		lives = lives - 1
@@ -239,8 +255,6 @@ function endGame(  )
 	composer.setVariable( "finalScore", score )
     composer.gotoScene( "highscores", { time = 800, effect = "crossFade" } )
 end
-
---Runtime:addEventListener( "collision", onCollision )
 
 -- -----------------------------------------------------------------------------------
 -- Scene event functions
@@ -282,7 +296,8 @@ function scene:create( event )
 	creditoText = display.newText( uiGroup, "Created by Ariane Brandão", 220, 1000, native.systemFont, 20 )
 
 	-- Listners
-	ship:addEventListener( "tap", fireLaser )
+	Runtime:addEventListener( "tap", fireLaser ) --atira quando toca na tela
+	--ship:addEventListener( "tap", fireLaser )
     ship:addEventListener( "touch", dragShip )
 
     --Sounds
